@@ -1,9 +1,0 @@
-.\objects\game.o: Hardware\game.c
-.\objects\game.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\game.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-.\objects\game.o: Hardware\OLED.h
-.\objects\game.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\game.o: Hardware\OLED_Data.h
-.\objects\game.o: Hardware\Key.h
-.\objects\game.o: .\System\Timer.h
-.\objects\game.o: .\System\Delay.h
