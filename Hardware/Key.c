@@ -1,4 +1,5 @@
 #include "stm32f10x.h"                  // Device header
+#include "user_config.h"
 #include "Delay.h"
 
 
@@ -8,28 +9,33 @@ uint16_t press_time = 0;
 
 static uint8_t Key_GetState(void)
 {
-	if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 0)			//读PB1输入寄存器的状态，如果为0，则代表按键1按下
+	if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 0)			
 	{
-		return 1;												//置键码为1
+		return 1;												
 	}
-	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6) == 0)			//读PA6输入寄存器的状态，如果为0，则代表按键3按下
+	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6) == 0)			
 	{
-		return 2;												//置键码为2
+		return 2;												
 	}
 	else if((GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0) && (press_time >= 1000))	//return 4 和 return 3 有顺序的区别。
 	{
-		return 4;												//置键码为3
+		return 4;												
 	}
-	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)			//读PA4输入寄存器的状态，如果为0，则代表按键2按下
+	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)			
 	{
-		return 3;												//置键码为3
+		return 3;												
 	}
 	else
 	{
 	  return 0;
 	}
 }
-
+/**
+  * @brief  Function of key long press-check.
+            which is called by timer2 interrupt. /timer.c
+  * @param  None.
+  * @retval None
+  */
 void Key3_Tick(void)
 {
   if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)
@@ -41,13 +47,18 @@ void Key3_Tick(void)
 	  press_time = 0;
 	}
 }
-
+/**
+  * @brief  Function of key-check.
+            which is called by timer2 interrupt per 20ms. /timer.c
+  * @param  None.
+  * @retval None
+  */
 void Key_Tick(void)
 {
   static uint8_t cnt = 0;
 	static uint8_t prev_state,curr_state;
 	cnt++;
-	if(cnt >= 20)
+	if(cnt >= BUTTON_DEBOUNCE_MS)
 	{
 	  cnt = 0;
 		prev_state = curr_state;
@@ -59,30 +70,35 @@ void Key_Tick(void)
 	}
 }
 /**
-  * 函    数：按键初始化
-  * 参    数：无
-  * 返 回 值：无
+  * @brief  Initialization of the key on the board.
+  * @param  None.
+  * @retval None
   */
 void Key_Init(void)
 {
-	/*开启时钟*/
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);		//开启GPIOA的时钟
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);		//开启GPIOB的时钟
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);		
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);		
 	
-	/*GPIO初始化*/
+
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);						//将PB1引脚初始化为上拉输入
+	GPIO_Init(GPIOB, &GPIO_InitStructure);						
 	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_6;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);						//将PA4和PA6引脚初始化为上拉输入
+	GPIO_Init(GPIOA, &GPIO_InitStructure);						
 }
 
 #if 1
-
+/**
+  * @brief  Function of getting key number,will be returned in void Key_Tick(void);
+  * @param  None.
+  * @retval Key_Num will be returned,when the key is pressed.
+            if Key_Num = 0,no key is pressed.
+  */
 uint8_t Key_GetNum(void)
 {
   uint8_t key_temp = 0;
