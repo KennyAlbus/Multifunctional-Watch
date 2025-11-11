@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-extern uint8_t Key_Num;
-extern uint16_t press_time;
+//extern uint8_t Key_Num;
+//extern uint16_t press_time;
 
 void Key_Init(void);
 uint8_t Key_GetNum(void);

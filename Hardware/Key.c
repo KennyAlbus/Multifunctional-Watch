@@ -4,49 +4,97 @@
 
 
 
-uint8_t Key_Num = 0;
-uint16_t press_time = 0;
 
-static uint8_t Key_GetState(void)
+static key_list_t key_info[] = 
 {
-	if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 0)			
+  {GPIOB,GPIO_Pin_1,KEY_RELEASE,0},
+	{GPIOA,GPIO_Pin_6,KEY_RELEASE,0},
+	{GPIOA,GPIO_Pin_4,KEY_RELEASE,0},
+};
+
+#define       KEY_MAX_NUM     (sizeof(key_info)/sizeof(key_info[0]))
+	
+uint8_t Key_Num = 0;
+
+
+//static uint8_t Key_GetState(void)
+//{
+//	if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 0)			
+//	{
+//		return 1;												
+//	}
+//	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6) == 0)			
+//	{
+//		return 2;												
+//	}
+//	else if((GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0) && (press_time >= 1000))	//return 4 和 return 3 有顺序的区别。
+//	{
+//		return 4;												
+//	}
+//	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)			
+//	{
+//		return 3;												
+//	}
+//	else
+//	{
+//	  return 0;
+//	}
+//}
+static uint8_t Key_State_Get(void)
+{
+  for(uint8_t i = 0;i < KEY_MAX_NUM;i++)
 	{
-		return 1;												
+		if((GPIO_ReadInputDataBit(key_info[i].port,key_info[i].pin) == KEY_PRESS) \
+			  && key_info[i].press_time < 1000)
+		{
+		  return (i+0x01);
+		}
+		else if((GPIO_ReadInputDataBit(key_info[i].port,key_info[i].pin) == KEY_PRESS) \
+  			&& key_info[i].press_time >= 1000 && key_info[i].press_time < 3000)
+		{
+		  return (i+0x81);
+		}
+		else if((GPIO_ReadInputDataBit(key_info[i].port,key_info[i].pin) == KEY_PRESS) \
+  			&& key_info[i].press_time >= 5000)
+		{
+		  return (i+0x41);
+		}
 	}
-	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6) == 0)			
-	{
-		return 2;												
-	}
-	else if((GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0) && (press_time >= 1000))	//return 4 和 return 3 有顺序的区别。
-	{
-		return 4;												
-	}
-	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)			
-	{
-		return 3;												
-	}
-	else
-	{
-	  return 0;
-	}
+	return 0;
 }
+
 /**
   * @brief  Function of key long press-check.
             which is called by timer2 interrupt. /timer.c
   * @param  None.
   * @retval None
   */
+//void Key3_Tick(void)
+//{
+//  if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)
+//	{
+//	  press_time++;
+//	}
+//	if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 1)
+//	{
+//	  press_time = 0;
+//	}
+//}
 void Key3_Tick(void)
 {
-  if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)
+  for(uint8_t i = 0;i < KEY_MAX_NUM;i++)
 	{
-	  press_time++;
-	}
-	if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 1)
-	{
-	  press_time = 0;
+	  if(GPIO_ReadInputDataBit(key_info[i].port,key_info[i].pin) == KEY_PRESS)
+		{
+		  key_info[i].press_time++;
+		}
+		else
+		{
+		  key_info[i].press_time = 0;
+		}
 	}
 }
+
 /**
   * @brief  Function of key-check.
             which is called by timer2 interrupt per 20ms. /timer.c
@@ -62,7 +110,7 @@ void Key_Tick(void)
 	{
 	  cnt = 0;
 		prev_state = curr_state;
-		curr_state = Key_GetState();
+		curr_state = Key_State_Get();
 		if(prev_state != 0 && curr_state == 0)  //press and unpress one time.
 		{
 		  Key_Num = prev_state;
@@ -96,7 +144,7 @@ void Key_Init(void)
 /**
   * @brief  Function of getting key number,will be returned in void Key_Tick(void);
   * @param  None.
-  * @retval Key_Num will be returned,when the key is pressed.
+  * @retval Key_Num will be returned when the key is pressed.
             if Key_Num = 0,no key is pressed.
   */
 uint8_t Key_GetNum(void)

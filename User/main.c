@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "stm32f10x.h"                  // Device header
+#include "user_config.h"
 #include "Delay.h"
 #include "OLED.h"
 #include "menu.h"
@@ -19,7 +20,6 @@ int page_switch_flag = 0;
 
 int main(void)
 {
-	/*OLED≥ı ºªØ*/
 	OLED_Init();
 	OLED_Clear();
 	Peripheral_Init();
