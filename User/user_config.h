@@ -30,7 +30,7 @@ typedef struct
 
 
 /* Firmware Version */
-#define   WATCH_VERSION_NUMBER   "V0.0.3"
+#define   WATCH_VERSION_NUMBER   "V0.0.4"
 
 
 /* Macro definition in Key.c */
