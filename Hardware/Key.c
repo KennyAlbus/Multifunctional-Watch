@@ -1,45 +1,27 @@
 #include "stm32f10x.h"                  // Device header
 #include "user_config.h"
 #include "Delay.h"
+#include "Timer.h"
 
 
 
 
+/******Private Variation define******/
 static key_list_t key_info[] = 
 {
-  {GPIOB,GPIO_Pin_1,KEY_RELEASE,0},
-	{GPIOA,GPIO_Pin_6,KEY_RELEASE,0},
-	{GPIOA,GPIO_Pin_4,KEY_RELEASE,0},
+  {RCC_APB2Periph_GPIOB,GPIOB,GPIO_Pin_1,GPIO_Mode_IPU,KEY_RELEASE,0},
+	{RCC_APB2Periph_GPIOA,GPIOA,GPIO_Pin_6,GPIO_Mode_IPU,KEY_RELEASE,0},
+	{RCC_APB2Periph_GPIOA,GPIOA,GPIO_Pin_4,GPIO_Mode_IPU,KEY_RELEASE,0},
+	//add your key here.
 };
 
 #define       KEY_MAX_NUM     (sizeof(key_info)/sizeof(key_info[0]))
-	
+
+/******Global Variation define******/
 uint8_t Key_Num = 0;
 
 
-//static uint8_t Key_GetState(void)
-//{
-//	if(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_1) == 0)			
-//	{
-//		return 1;												
-//	}
-//	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6) == 0)			
-//	{
-//		return 2;												
-//	}
-//	else if((GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0) && (press_time >= 1000))	//return 4 和 return 3 有顺序的区别。
-//	{
-//		return 4;												
-//	}
-//	else if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)			
-//	{
-//		return 3;												
-//	}
-//	else
-//	{
-//	  return 0;
-//	}
-//}
+
 static uint8_t Key_State_Get(void)
 {
   for(uint8_t i = 0;i < KEY_MAX_NUM;i++)
@@ -47,7 +29,7 @@ static uint8_t Key_State_Get(void)
 		if((GPIO_ReadInputDataBit(key_info[i].port,key_info[i].pin) == KEY_PRESS) \
 			  && key_info[i].press_time < 1000)
 		{
-		  return (i+0x01);
+			return (i+0x01);
 		}
 		else if((GPIO_ReadInputDataBit(key_info[i].port,key_info[i].pin) == KEY_PRESS) \
   			&& key_info[i].press_time >= 1000 && key_info[i].press_time < 3000)
@@ -69,17 +51,6 @@ static uint8_t Key_State_Get(void)
   * @param  None.
   * @retval None
   */
-//void Key3_Tick(void)
-//{
-//  if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 0)
-//	{
-//	  press_time++;
-//	}
-//	if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4) == 1)
-//	{
-//	  press_time = 0;
-//	}
-//}
 void Key3_Tick(void)
 {
   for(uint8_t i = 0;i < KEY_MAX_NUM;i++)
@@ -97,7 +68,7 @@ void Key3_Tick(void)
 
 /**
   * @brief  Function of key-check.
-            which is called by timer2 interrupt per 20ms. /timer.c
+            which is called by timer2 interrupt per @BUTTON_DEBOUNCE_MS ms. /timer.c
   * @param  None.
   * @retval None
   */
@@ -124,20 +95,15 @@ void Key_Tick(void)
   */
 void Key_Init(void)
 {
-
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);		
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);		
-	
-
 	GPIO_InitTypeDef GPIO_InitStructure;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);						
-	
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_6;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);						
+  for(uint8_t i = 0;i < KEY_MAX_NUM;i++)
+	{
+	  RCC_APB2PeriphClockCmd(key_info[i].clock,ENABLE);
+		GPIO_InitStructure.GPIO_Mode = key_info[i].mode;
+	  GPIO_InitStructure.GPIO_Pin = key_info[i].pin;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_Init(key_info[i].port, &GPIO_InitStructure);
+	}		
 }
 
 #if 1

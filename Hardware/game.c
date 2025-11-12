@@ -1,3 +1,4 @@
+#include "user_config.h"
 #include <stdlib.h>
 #include <math.h>
 #include "OLED.h"
@@ -92,7 +93,7 @@ static void Show_Cloud(void)
 static void Show_Dinosaur(void)
 {
 	m_key_num = Key_GetNum();
-	if(m_key_num == 1)
+	if(m_key_num == KEY1_SINGLE_CLICK)
 		dino_jump_flag = DINOSAUR_JUMP;
 	jump_pos = 28*sin((float)(pi*jump_t/1000));
   if(dino_jump_flag == DINOSAUR_RUN)

@@ -1,3 +1,4 @@
+#include "user_config.h"
 #include "MyRTC.h"
 #include "Timer.h"
 #include "OLED.h"
@@ -64,17 +65,17 @@ static void Set_Year(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(0,SET_TIME_MINUS);
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(0,SET_TIME_PLUS);
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  return;
 		}
@@ -89,21 +90,21 @@ static void Set_Month(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(1,SET_TIME_MINUS);
 			if(MyRTC_Time[1] < 1)
 				MyRTC_Time[1] = 12;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(1,SET_TIME_PLUS);
 			if(MyRTC_Time[1] > 12)
 				MyRTC_Time[1] = 1;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  return;
 		}
@@ -118,21 +119,21 @@ static void Set_Day(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(2,SET_TIME_MINUS);
 			if(MyRTC_Time[2] < 1)
 				MyRTC_Time[2] = 31;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(2,SET_TIME_PLUS);
 			if(MyRTC_Time[2] > 31)
 				MyRTC_Time[2] = 1;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  return;
 		}
@@ -147,21 +148,21 @@ static void Set_Hour(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(3,SET_TIME_MINUS);
 			if(MyRTC_Time[3] < 0)
 				MyRTC_Time[3] = 23;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(3,SET_TIME_PLUS);
 			if(MyRTC_Time[3] > 23)
 				MyRTC_Time[3] = 0;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  return;
 		}
@@ -176,21 +177,21 @@ static void Set_Minute(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(4,SET_TIME_MINUS);
 			if(MyRTC_Time[4] < 0)
 				MyRTC_Time[4] = 59;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(4,SET_TIME_PLUS);
 			if(MyRTC_Time[4] > 59)
 				MyRTC_Time[4] = 0;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  return;
 		}
@@ -205,21 +206,21 @@ static void Set_Second(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(5,SET_TIME_MINUS);
 			if(MyRTC_Time[5] < 0)
 				MyRTC_Time[5] = 59;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  Change_RTC_Time(5,SET_TIME_PLUS);
 			if(MyRTC_Time[5] > 59)
 				MyRTC_Time[5] = 0;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  return;
 		}
@@ -235,27 +236,23 @@ int Time_Setting_Page(void)
 	{
 		uint8_t ts_index_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  ts_index--;
 			if(ts_index < 0)
 				ts_index = 7;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  ts_index++;
 			if(ts_index > 7)
 				ts_index = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
 			ts_index_temp = ts_index;
-		}
-		else
-		{
-		  
 		}
 		
 		if(ts_index_temp == 0)

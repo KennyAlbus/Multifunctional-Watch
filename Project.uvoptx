@@ -163,12 +163,12 @@
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>prev_state</ItemText>
+          <ItemText>key_info[i].press_time</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>curr_state</ItemText>
+          <ItemText>first_click_time</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

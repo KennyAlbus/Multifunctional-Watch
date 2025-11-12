@@ -88,25 +88,25 @@ int First_Page_Clock(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)     //last choice
+		if(m_key_num == KEY1_SINGLE_CLICK)     //last choice
 		{
 		  csflag--;
 			if(csflag <= 0)
 				csflag = 2;
 		}
-		else if(m_key_num == 2)  //next choice
+		else if(m_key_num == KEY2_SINGLE_CLICK)  //next choice
 		{
 		  csflag++;
 			if(csflag >= 3)
 				csflag = 1;
 		}
-		else if(m_key_num == 3)   //confirm
+		else if(m_key_num == KEY3_SINGLE_CLICK)   //confirm
 		{
 			OLED_Clear();
 		  OLED_Update();
 			return csflag;
 		}
-		else if(m_key_num == 4)
+		else if(m_key_num == KEY3_LONG_PRESS)
 		{
 		  GPIO_SetBits(GPIOB,GPIO_Pin_12);
 			GPIO_ResetBits(GPIOB,GPIO_Pin_13);
@@ -164,19 +164,19 @@ int Setting_Page_Info(void)
 	{
 		uint8_t setflag_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  setflag--;
 			if(setflag < 0)
 				setflag = 5;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  setflag++;
 			if(setflag > 5)
 				setflag = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -384,6 +384,7 @@ static void Timer_Timer_handler(void)
 	}
 	else if(TIMER_COUNT_CLEAR == timer_begin_flag)
 	{
+		timer_begin_flag = TIMER_COUNT_STOP;
 	  hour = 0;
 		min = 0;
 		sec = 0;
@@ -478,9 +479,9 @@ static void Counter_Timer_Handler(void)
 }
 
 /**
-  * @brief  Deinitializes the GPIOx peripheral registers to their default reset values.
-  * @param  GPIOx: where x can be (A..G) to select the GPIO peripheral.
-  * @retval None
+  * @brief  Count time from zero second,such as 1s,2s,3s...59s.
+  * @param  None.
+  * @retval Return value is used to go back to the previous menu level.
   */
 static int Counter_Timer(void)
 {
@@ -488,19 +489,19 @@ static int Counter_Timer(void)
 	{
 		uint8_t timer_index_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  timer_index--;
 			if(timer_index < 0)
 				timer_index = 4;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  timer_index++;
 			if(timer_index > 4)
 				timer_index = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -583,19 +584,19 @@ static int StopWatch(void)
 	{
 		uint8_t sw_index_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  sw_index--;
 			if(sw_index < 0)
 				sw_index = 2;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  sw_index++;
 			if(sw_index > 2)
 				sw_index = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -656,7 +657,7 @@ static int Counter_Time_Set(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  if(cm_index == 1)
 			{
@@ -683,7 +684,7 @@ static int Counter_Time_Set(void)
 					milisec = 99;
 			}
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  if(cm_index == 1)
 			{
@@ -710,7 +711,7 @@ static int Counter_Time_Set(void)
 					milisec = 0;
 			}
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  return 0;
 		}
@@ -770,19 +771,19 @@ static int Counter_Machine(void)
 	{
 		uint8_t cm_index_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  cm_index--;
 			if(cm_index < 0)
 				cm_index = 5;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  cm_index++;
 			if(cm_index > 5)
 				cm_index = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -868,14 +869,14 @@ static void Generate_Random_Number(void)
 	while(1)
 	{
 		m_key_num = Key_GetNum();
-		if(m_key_num == 2)
+		if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 			if(!random_start_flag)
 				random_start_flag = 1;
 		  else
 				random_start_flag = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -894,19 +895,19 @@ int Timer_Page_Select(void)
 	{
 		uint8_t clock_index_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  clock_index--;
 			if(clock_index < 0)
 				clock_index = 5;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  clock_index++;
 			if(clock_index > 5)
 				clock_index = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -1011,19 +1012,19 @@ int Torch(void)
 	{
 		uint8_t torch_index_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  torch_index--;
 			if(torch_index < 0)
 				torch_index = RETURN_HOME_UI;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  torch_index++;
 			if(torch_index > RETURN_HOME_UI)
 				torch_index = RETURN_PREV_MENU0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 //			OLED_Clear();
 //			OLED_Update();
@@ -1129,7 +1130,7 @@ int MPU6050(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 3)
+		if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -1168,19 +1169,19 @@ uint8_t Game_Select_Page(void)
 	{
 		uint8_t game_index_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 		  game_index--;
 			if(game_index < 0)
 				game_index = 3;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 		  game_index++;
 			if(game_index > 3)
 				game_index = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -1267,7 +1268,7 @@ int Dynamic_Emoji(void)
   while(1)
 	{
 		m_key_num = Key_GetNum();
-		if(m_key_num == 3)
+		if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -1291,7 +1292,7 @@ int Gradienter(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 3)
+		if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();
@@ -1385,7 +1386,7 @@ int Enter_Menu_Option(void)
 	{
 		uint8_t menu_index_temp = 0xff;
 	  m_key_num = Key_GetNum();
-		if(m_key_num == 1)
+		if(m_key_num == KEY1_SINGLE_CLICK)
 		{
 			direct_flag = 1;
 			move_flag = 1;
@@ -1393,7 +1394,7 @@ int Enter_Menu_Option(void)
 			if(menu_index < 0)
 				menu_index = 6;
 		}
-		else if(m_key_num == 2)
+		else if(m_key_num == KEY2_SINGLE_CLICK)
 		{
 			direct_flag = 2;
 			move_flag = 1;
@@ -1401,7 +1402,7 @@ int Enter_Menu_Option(void)
 			if(menu_index > 6)
 				menu_index = 0;
 		}
-		else if(m_key_num == 3)
+		else if(m_key_num == KEY3_SINGLE_CLICK)
 		{
 		  OLED_Clear();
 			OLED_Update();

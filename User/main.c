@@ -7,6 +7,7 @@
 #include "Key.h"
 #include "LED.h"
 #include "game.h"
+//#include "Timer.h"
 
 
 
@@ -28,11 +29,11 @@ int main(void)
 	while (1)
 	{
 		page_switch_flag = First_Page_Clock();
-		if(page_switch_flag == 1)
+		if(page_switch_flag == FIRST_PAGE_MENU_CHOICE)
 		{
 		  Enter_Menu_Option();    //Menu
 		}
-		else if(page_switch_flag == 2)
+		else if(page_switch_flag == FIRST_PAGE_SETTING_CHOICE)
 		{
 		  Setting_Page_Info();   //Setting
 		}

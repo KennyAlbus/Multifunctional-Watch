@@ -8,6 +8,9 @@ static void (*p_counter_timer_handler)(void);
 static void (*p_stopwatch_timer_handler)(void);
 static void (*p_dinoScore_timer_handler)(void);
 
+
+static uint32_t m_run_time;
+
 void Timer_Timer_Callback(void (*p_func0)(void),void (*p_func1)(void))
 {
   p_timer_timer_handler = p_func0;
@@ -58,6 +61,7 @@ void TIM2_IRQHandler(void)
 {
 	if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
 	{
+		m_run_time++;
 		Key_Tick();
 		Key3_Tick();
 		p_timer_timer_handler();
@@ -68,3 +72,7 @@ void TIM2_IRQHandler(void)
 	}
 }
 
+uint32_t Run_Time_Get(void)
+{
+  return m_run_time;
+}
