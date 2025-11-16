@@ -19,6 +19,8 @@ static key_list_t key_info[] =
 
 /******Global Variation define******/
 uint8_t Key_Num = 0;
+uint8_t double_click_flag = 0;
+uint8_t runtime = 0;
 
 
 

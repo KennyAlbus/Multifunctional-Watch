@@ -9,6 +9,7 @@
 #include "OLED.h"
 #include "Key.h"
 #include "LED.h"
+#include "PWM.h"
 #include "SetTime.h"
 #include "MPU6050.h"
 #include "game.h"
@@ -44,6 +45,7 @@ static uint8_t m_key_num = 0;
 static void Timer_Timer_handler(void);
 static void Counter_Timer_Handler(void);
 static void StopWatch_Timer_Handler(void);
+static void LedMode_Switch_Timer_Handler(void);
 static void Menu_To_Function(void);
 
 
@@ -59,19 +61,22 @@ void Peripheral_Init(void)
 	Timer_Init();
 	Key_Init();
 	LED_Init();
+	PWM_Init();
 	MPU6050_Init();
 	Battery_Init();
 }
 void Menu_App_Init(void)
 {
-  Timer_Timer_Callback(Timer_Timer_handler,Counter_Timer_Handler);
-	StopWatch_Timer_Callback(StopWatch_Timer_Handler);
+  Timer_Timer_Callback(Timer_Timer_handler,Counter_Timer_Handler,StopWatch_Timer_Handler);
+	Led_Timer_Callback(LedMode_Switch_Timer_Handler);
 	Game_App_Init();
 }
 
 
 
 /***************************First Page UI****************************/
+LedMode_t ledmode_flag = LED_MODE_OFF;
+
 void Show_Clock_UI(void)
 {
 	Show_Battery_UI();
@@ -106,10 +111,16 @@ int First_Page_Clock(void)
 		  OLED_Update();
 			return csflag;
 		}
+//		else if(m_key_num == KEY3_LONG_PRESS)
+//		{
+//		  GPIO_SetBits(GPIOB,GPIO_Pin_12);
+//			GPIO_ResetBits(GPIOB,GPIO_Pin_13);
+//		}
 		else if(m_key_num == KEY3_LONG_PRESS)
 		{
-		  GPIO_SetBits(GPIOB,GPIO_Pin_12);
-			GPIO_ResetBits(GPIOB,GPIO_Pin_13);
+		  ledmode_flag++;
+			if(ledmode_flag >= LED_MODE_MAX)
+				ledmode_flag = LED_MODE_OFF;
 		}
 		
 		switch(csflag)
@@ -989,6 +1000,10 @@ int Timer_Page_Select(void)
 
 /***************************Torch Page UI****************************/
 int torch_index;
+static uint16_t duty_cycle;
+static uint8_t led_breath_direction;
+static uint8_t blink_cnt,flash_cnt;
+const uint8_t step = BREATH_STEP_CONFIG;
 
 enum
 {
@@ -1004,6 +1019,137 @@ static void Show_Torch_UI(void)
 	OLED_ShowImage(112,0,16,16,Home_Image);
 	OLED_ShowString(0,48,"ON",OLED_8X16);
 	OLED_ShowString(104,48,"OFF",OLED_8X16);
+}
+
+static void Led_Torch_Off(void)
+{
+  Pwm_DutyCycle_Set(0);
+}
+
+static void Led_Torch_On(void)
+{
+  Pwm_DutyCycle_Set(100);
+}
+
+/**
+  * @brief  Implementation of breath led Based on PWM,
+            duty cycle value:0~100.
+  * @param  None.
+  * @retval None
+  */
+static void Breath_Led_Switch(void)
+{
+  if(!led_breath_direction)
+	{
+	  if(duty_cycle < 100 - step)
+		{
+		  duty_cycle += step;
+		}
+		else
+		{
+		  duty_cycle = 100;
+			led_breath_direction = 1;
+		}
+	}
+	else
+	{
+	  if(duty_cycle > step)
+		{
+		  duty_cycle -= step;
+		}
+		else
+		{
+		  duty_cycle = 0;
+			led_breath_direction = 0;
+		}
+	}
+	Pwm_DutyCycle_Set(duty_cycle);
+}
+
+static void Blink_Led_Switch(void)
+{
+  static uint8_t blink_state;
+	blink_cnt++;
+	if(blink_cnt >= BLINK_INTERVAL_CONFIG)
+	{
+	  blink_cnt = 0;
+		blink_state = !blink_state;
+		Pwm_DutyCycle_Set(blink_state ? 100 : 0);
+	}
+}
+
+static void Flash_Led_Switch(void)
+{
+  static uint8_t flash_state,flash_times;
+	flash_cnt++;
+	if(flash_cnt >= 20)
+	{
+	  flash_cnt = 0;
+		flash_state = !flash_state;
+		if(flash_state)
+		{
+		  flash_times++;
+			if(flash_times > FLASH_COUNT_CONFIG*2)
+			{
+			  flash_times = 0;
+				Pwm_DutyCycle_Set(0);
+				return;
+			}
+		}
+		Pwm_DutyCycle_Set(flash_state ? 100 : 0);
+	}
+}
+
+/**
+  * @brief  Led effect switch function,which is called by TIM2
+            it has 5 mode in total.
+  * @param  None.
+  * @retval None
+  */
+static void LedMode_Switch_Timer_Handler(void)
+{
+	if(ledmode_flag >= LED_MODE_MAX)
+		return;
+	static uint8_t timer_cnt;
+	timer_cnt++;
+	if(timer_cnt >= BREATH_INTERVAL_CONFIG)
+	{
+	  timer_cnt = 0;
+		switch(ledmode_flag)
+		{
+			case LED_MODE_OFF:
+			{
+				Led_Torch_Off();
+				blink_cnt = 0;
+				flash_cnt = 0;
+				duty_cycle = 0;
+				led_breath_direction = 0;
+				break;
+			}
+			case LED_MODE_TORCH:
+			{
+				Led_Torch_On();
+				break;
+			}
+			case LED_MODE_BREATH:
+			{
+				Breath_Led_Switch();
+				break;
+			}
+			case LED_MODE_BLINK:
+			{
+			  Blink_Led_Switch();
+				break;
+			}
+			case LED_MODE_FLASH:
+			{
+			  Flash_Led_Switch();
+				break;
+			}
+			default:
+				break;
+		}
+	}
 }
 
 int Torch(void)

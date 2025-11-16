@@ -429,6 +429,11 @@
               <FileType>1</FileType>
               <FilePath>.\System\AD.c</FilePath>
             </File>
+            <File>
+              <FileName>PWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\System\PWM.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

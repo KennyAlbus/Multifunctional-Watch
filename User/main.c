@@ -7,6 +7,7 @@
 #include "Key.h"
 #include "LED.h"
 #include "game.h"
+#include "PWM.h"
 //#include "Timer.h"
 
 
@@ -37,5 +38,15 @@ int main(void)
 		{
 		  Setting_Page_Info();   //Setting
 		}
+//		for(uint8_t i = 0;i < 100;i++)
+//		{
+//		  PWM_SetCompare2(i);
+//			Delay_ms(10);
+//		}
+//		for(uint8_t i = 0;i < 100;i++)
+//		{
+//		  PWM_SetCompare2(100-i);
+//			Delay_ms(10);
+//		}
 	}
 }
