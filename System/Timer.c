@@ -65,9 +65,7 @@ void TIM3_IRQHandler(void)
 {
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) == SET)
 	{
-		m_run_time++;
-		Key_Tick();
-		Key3_Tick();
+		Key_Timer_Handler();
 		p_timer_timer_handler();
 		p_counter_timer_handler();
 		p_stopwatch_timer_handler();

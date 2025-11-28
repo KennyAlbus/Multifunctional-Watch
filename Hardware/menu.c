@@ -216,7 +216,7 @@ int Setting_Page_Info(void)
 			OLED_Clear();
 			OLED_ShowString(40,24,WATCH_VERSION_NUMBER,OLED_8X16);
 			OLED_Update();
-			while(Key_GetNum() != 3);
+			while(Key_GetNum() != KEY3_SINGLE_CLICK);
 		}
 		switch(setflag)
 		{

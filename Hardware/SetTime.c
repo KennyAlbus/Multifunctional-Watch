@@ -65,12 +65,12 @@ static void Set_Year(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == KEY1_SINGLE_CLICK)
+		if(m_key_num == KEY1_SINGLE_CLICK || m_key_num == KEY1_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(0,SET_TIME_MINUS);
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == KEY2_SINGLE_CLICK)
+		else if(m_key_num == KEY2_SINGLE_CLICK || m_key_num == KEY2_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(0,SET_TIME_PLUS);
 			MyRTC_SetTime();
@@ -90,14 +90,14 @@ static void Set_Month(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == KEY1_SINGLE_CLICK)
+		if(m_key_num == KEY1_SINGLE_CLICK || m_key_num == KEY1_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(1,SET_TIME_MINUS);
 			if(MyRTC_Time[1] < 1)
 				MyRTC_Time[1] = 12;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == KEY2_SINGLE_CLICK)
+		else if(m_key_num == KEY2_SINGLE_CLICK || m_key_num == KEY2_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(1,SET_TIME_PLUS);
 			if(MyRTC_Time[1] > 12)
@@ -119,14 +119,14 @@ static void Set_Day(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == KEY1_SINGLE_CLICK)
+		if(m_key_num == KEY1_SINGLE_CLICK || m_key_num == KEY1_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(2,SET_TIME_MINUS);
 			if(MyRTC_Time[2] < 1)
 				MyRTC_Time[2] = 31;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == KEY2_SINGLE_CLICK)
+		else if(m_key_num == KEY2_SINGLE_CLICK || m_key_num == KEY2_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(2,SET_TIME_PLUS);
 			if(MyRTC_Time[2] > 31)
@@ -148,14 +148,14 @@ static void Set_Hour(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == KEY1_SINGLE_CLICK)
+		if(m_key_num == KEY1_SINGLE_CLICK || m_key_num == KEY1_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(3,SET_TIME_MINUS);
 			if(MyRTC_Time[3] < 0)
 				MyRTC_Time[3] = 23;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == KEY2_SINGLE_CLICK)
+		else if(m_key_num == KEY2_SINGLE_CLICK || m_key_num == KEY2_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(3,SET_TIME_PLUS);
 			if(MyRTC_Time[3] > 23)
@@ -177,14 +177,14 @@ static void Set_Minute(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == KEY1_SINGLE_CLICK)
+		if(m_key_num == KEY1_SINGLE_CLICK || m_key_num == KEY1_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(4,SET_TIME_MINUS);
 			if(MyRTC_Time[4] < 0)
 				MyRTC_Time[4] = 59;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == KEY2_SINGLE_CLICK)
+		else if(m_key_num == KEY2_SINGLE_CLICK || m_key_num == KEY2_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(4,SET_TIME_PLUS);
 			if(MyRTC_Time[4] > 59)
@@ -206,14 +206,14 @@ static void Set_Second(void)
   while(1)
 	{
 	  m_key_num = Key_GetNum();
-		if(m_key_num == KEY1_SINGLE_CLICK)
+		if(m_key_num == KEY1_SINGLE_CLICK || m_key_num == KEY1_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(5,SET_TIME_MINUS);
 			if(MyRTC_Time[5] < 0)
 				MyRTC_Time[5] = 59;
 			MyRTC_SetTime();
 		}
-		else if(m_key_num == KEY2_SINGLE_CLICK)
+		else if(m_key_num == KEY2_SINGLE_CLICK|| m_key_num == KEY2_REPEAT_HOLD)
 		{
 		  Change_RTC_Time(5,SET_TIME_PLUS);
 			if(MyRTC_Time[5] > 59)
